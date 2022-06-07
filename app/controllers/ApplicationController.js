@@ -3,7 +3,7 @@ const { NotFoundError } = require('../errors');
 class ApplicationController {
  handleGetRoot = (res) => {
     res.status(200).json({
-      // status: 'OK',
+      status: 'OK',
       message: 'BCR API is up and running!',
     });
   };

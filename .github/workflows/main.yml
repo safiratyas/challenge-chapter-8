@@ -17,13 +17,13 @@ jobs:
           heroku_email: ${{secrets.HEROKU_EMAIL}}
           dontuseforce: true
           dontautocreate: true
-        # env:
-        #   HD_JWT_SIGNATURE_KEY: ${{secrets.JWT_SIGNATURE_KEY}}
-        #   HD_DB_USER: ${{secrets.DB_USER}}
-        #   HD_DB_PASSWORD: ${{secrets.DB_PASSWORD}}
-        #   HD_DB_NAME: ${{secrets.DB_NAME}}
-        #   HD_DB_HOST: ${{secrets.DB_HOST}}
-        #   HD_DB_PORT: "5432"
+        env:
+          HD_JWT_SIGNATURE_KEY: ${{secrets.JWT_SIGNATURE_KEY}}
+          HD_DB_USER: ${{secrets.DB_USER}}
+          HD_DB_PASSWORD: ${{secrets.DB_PASSWORD}}
+          HD_DB_NAME: ${{secrets.DB_NAME}}
+          HD_DB_HOST: ${{secrets.DB_HOST}}
+          HD_DB_PORT: ${{secrets.DB_PORT}}
 
 
           
