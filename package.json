@@ -4,12 +4,14 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "node -r dotenv/config bin/www",
-    "develop": "nodemon -r dotenv/config bin/www",
+    "start": "npm run develop",
+    "develop": "nodemon dotenv/config bin/www",
     "db:create": "sequelize db:create",
     "db:drop": "sequelize db:drop",
     "db:migrate": "sequelize db:migrate",
-    "db:seed": "sequelize db:seed:undo:all && sequelize db:seed:all"
+    "db:seed": "sequelize db:seed:undo:all && sequelize db:seed:all",
+    "lint": "eslint ./ --resolve-plugins-relative-to .",
+    "lint:fix": "eslint --fix ./**/*.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -25,6 +27,9 @@
     "swagger-ui-express": "^4.4.0"
   },
   "devDependencies": {
+    "eslint": "^8.16.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.26.0",
     "nodemon": "^2.0.16"
   }
 }
