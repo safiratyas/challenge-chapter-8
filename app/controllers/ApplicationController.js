@@ -4,7 +4,7 @@ class ApplicationController {
  handleGetRoot = (res) => {
     res.status(200).json({
       status: 'OK',
-      message: 'BCR API is up and running!',
+      // message: 'BCR API is up and running!',
     });
   };
 
