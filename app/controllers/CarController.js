@@ -112,15 +112,24 @@ class CarController extends ApplicationController {
 
       const car = this.getCarFromRequest(req);
 
-      await car.update({
+      const carsUpdate = await this.carModel.update(
+      {
         name,
         price,
         size,
         image,
         isCurrentlyRented: false,
-      });
+      },
+      {
+        where: {
+        id: req.params.id,
+      },
+      },
+      );
 
-      res.status(200).json(car);
+      res.status(201).json(
+        { message: 'Data have been updated successfully' },
+        );
     } catch (err) {
       res.status(422).json({
         error: {
@@ -132,8 +141,15 @@ class CarController extends ApplicationController {
   };
 
   handleDeleteCar = async (req, res) => {
-    const car = await this.carModel.destroy(req.params.id);
-    res.status(204).end();
+    const car = await this.carModel.destroy({
+      where: {
+        id: req.params.id,
+    },
+    });
+
+    res.status(200).json(
+      { message: 'Data have been deleted successfully' },
+      );
   };
 
   getCarFromRequest(req) {

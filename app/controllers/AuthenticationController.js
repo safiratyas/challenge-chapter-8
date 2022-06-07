@@ -154,9 +154,9 @@ class AuthenticationController extends ApplicationController {
 
   encryptPassword = (password) => this.bcrypt.hashSync(password, 10);
 
-  verifyPassword = (password, encryptedPassword) => {
-    this.bcrypt.compareSync(password, encryptedPassword);
-  };
+  verifyPassword(password, encryptedPassword) {
+    return this.bcrypt.compareSync(password, encryptedPassword);
+  }
 }
 
 module.exports = AuthenticationController;
