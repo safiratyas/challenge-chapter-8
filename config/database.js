@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const {
   DB_USER = '',
   DB_PASSWORD = '',
@@ -27,6 +29,7 @@ module.exports = {
     database: `${DB_NAME}`,
     host: DB_HOST,
     port: DB_PORT,
+    logging: false,
     dialect: 'postgres',
     dialectOptions: {
       ssl: {
