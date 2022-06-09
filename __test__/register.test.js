@@ -4,14 +4,14 @@ const { User } = require('../app/models');
 
 describe('POST /v1/auth/register', () => {
   const user201 = {
-    name: 'Ace',
-    email: 'ace@gmail.com',
-    password: 'shirohige',
+    name: 'Kim Namjoon',
+    email: 'rkive@gmail.com',
+    password: 'namjoonarchive',
   };
   const user422 = {
-    name: 'Zoro',
-    email: 'roronoa@gmail.com',
-    password: 'roronoa',
+    name: 'Kim Seokjin',
+    email: 'seokjin@gmail.com',
+    password: 'eatjin',
     role: 2,
   };
   beforeEach(async () => {
