@@ -65,7 +65,7 @@ class AuthenticationController extends ApplicationController {
         return;
       }
 
-      const isPasswordCorrect = this.verifyPassword(password, user.encryptedPassword);
+      const isPasswordCorrect = await this.verifyPassword(password, user.encryptedPassword);
 
       if (!isPasswordCorrect) {
         const err = new WrongPasswordError();
@@ -73,7 +73,7 @@ class AuthenticationController extends ApplicationController {
         return;
       }
 
-      const accessToken = this.createTokenFromUser(user, user.Role);
+      const accessToken = await this.createTokenFromUser(user, user.Role);
 
       res.status(200).json({
         accessToken,
@@ -137,16 +137,16 @@ class AuthenticationController extends ApplicationController {
     res.status(200).json(user);
   };
 
-  createTokenFromUser = (user, role) => this.jwt.sign({
-    id: user.id,
-    name: user.name,
-    email: user.email,
-    image: user.image,
-    role: {
-      id: role.id,
-      name: role.name,
-    },
-  }, JWT_SIGNATURE_KEY);
+  createTokenFromUser = async (user, role) => this.jwt.sign({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      image: user.image,
+      role: {
+        id: role.id,
+        name: role.name,
+      },
+    }, JWT_SIGNATURE_KEY);
 
   decodeToken(token) {
     return this.jwt.verify(token, JWT_SIGNATURE_KEY);
