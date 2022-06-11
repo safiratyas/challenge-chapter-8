@@ -82,7 +82,7 @@ describe('GET /v1/auth/whoami', () => {
         });
     });
 
-    it('should response with 401 as status code which means valid role (CUSTOMER)', () => {
+    it('should response with 401 as status code which means invalid role (ADMIN)', () => {
       request(app)
       .get('/v1/auth/whoami')
       .set('Authorization', `Bearer ${token}`)
