@@ -46,7 +46,7 @@ describe('GET /v1/auth/whoami', () => {
     }
   });
 
-  describe('Successfull Operation', () => {
+  describe('Mission Successfull', () => {
     let token;
     beforeEach(async () => {
       await request(app)
@@ -70,7 +70,7 @@ describe('GET /v1/auth/whoami', () => {
     });
   });
 
-  describe('Invalid Operation', () => {
+  describe('Mission Failed', () => {
     let token;
     beforeEach(async () => {
       await request(app)
