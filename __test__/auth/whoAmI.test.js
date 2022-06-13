@@ -52,7 +52,10 @@ describe('GET /v1/auth/whoami', () => {
       await request(app)
         .post('/v1/auth/login')
         .set('Content-Type', 'application/json')
-        .send({ email: validUser.email, password: userPassword })
+        .send({
+          email: validUser.email,
+          password: userPassword,
+        })
         .then((validRoleUser) => {
           token = validRoleUser.body.accessToken;
         });
@@ -60,13 +63,13 @@ describe('GET /v1/auth/whoami', () => {
 
     it('should response with 200 as status code which means valid role (CUSTOMER)', () => {
       request(app)
-      .get('/v1/auth/whoami')
-      .set('Authorization', `Bearer ${token}`)
-      .then((whichValidUser) => {
-        expect(whichValidUser.statusCode).toBe(200);
-        expect(whichValidUser.body.name).toEqual(validUser.name);
-        expect(whichValidUser.body.email).toEqual(validUser.email.toLowerCase());
-      });
+        .get('/v1/auth/whoami')
+        .set('Authorization', `Bearer ${token}`)
+        .then((whichValidUser) => {
+          expect(whichValidUser.statusCode).toBe(200);
+          expect(whichValidUser.body.name).toEqual(validUser.name);
+          expect(whichValidUser.body.email).toEqual(validUser.email.toLowerCase());
+        });
     });
   });
 
@@ -76,7 +79,10 @@ describe('GET /v1/auth/whoami', () => {
       await request(app)
         .post('/v1/auth/login')
         .set('Content-Type', 'application/json')
-        .send({ email: invalidUser.email, password: userPassword })
+        .send({
+          email: invalidUser.email,
+          password: userPassword,
+        })
         .then((invalidRoleUser) => {
           token = invalidRoleUser.body.accessToken;
         });
@@ -84,21 +90,21 @@ describe('GET /v1/auth/whoami', () => {
 
     it('should response with 401 as status code which means invalid role (ADMIN)', () => {
       request(app)
-      .get('/v1/auth/whoami')
-      .set('Authorization', `Bearer ${token}`)
-      .then((whichInvalidUser) => {
-        expect(whichInvalidUser.statusCode).toBe(401);
-        expect(whichInvalidUser.body).toEqual({
-          error: {
-            name: 'Error',
-            message: 'Access forbidden!',
-            details: {
-              role: 'ADMIN',
-              reason: 'ADMIN is not allowed to perform this operation.',
+        .get('/v1/auth/whoami')
+        .set('Authorization', `Bearer ${token}`)
+        .then((whichInvalidUser) => {
+          expect(whichInvalidUser.statusCode).toBe(401);
+          expect(whichInvalidUser.body).toEqual({
+            error: {
+              name: 'Error',
+              message: 'Access forbidden!',
+              details: {
+                role: 'ADMIN',
+                reason: 'ADMIN is not allowed to perform this operation.',
+              },
             },
-          },
+          });
         });
-      });
     });
   });
 });
