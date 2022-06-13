@@ -42,7 +42,9 @@ class CarController extends ApplicationController {
         size,
         image,
       } = req.body;
-
+      if (typeof name !== 'string') {
+        throw new Error('Name must be input in string');
+      }
       const car = await this.carModel.create({
         name,
         price,

@@ -3,8 +3,8 @@ const app = require('../app');
 const { NotFoundError } = require('../app/errors');
 
 describe('GET /', () => {
-  it('should response with 200 as status code which means handle successfully running', () => {
-    request(app)
+  it('should response with 200 as status code which means handle successfully running', async () => {
+    await request(app)
     .get('/')
     .then((res) => {
       expect(res.statusCode).toBe(200);
@@ -13,8 +13,8 @@ describe('GET /', () => {
     });
   });
 
-  it('should response with 404 as status code which means handle not found', () => {
-    request(app)
+  it('should response with 404 as status code which means handle not found', async () => {
+    await request(app)
     .get('/car')
     .then((res) => {
       const expectedError = new NotFoundError('GET', '/car');

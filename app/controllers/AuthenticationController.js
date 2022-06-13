@@ -28,10 +28,10 @@ class AuthenticationController extends ApplicationController {
     CUSTOMER: 'CUSTOMER',
   };
 
-  authorize = (rolename) => (req, res, next) => {
+  authorize = (rolename) => async (req, res, next) => {
     try {
       const token = req.headers.authorization?.split('Bearer ')[1];
-      const payload = this.decodeToken(token);
+      const payload = await this.decodeToken(token);
 
       if (!!rolename && rolename !== payload.role.name) {
         throw new InsufficientAccessError(payload?.role?.name);
@@ -40,11 +40,15 @@ class AuthenticationController extends ApplicationController {
       req.user = payload;
       next();
     } catch (err) {
+      let details = null;
+      if (err.details) {
+        details = err.details;
+      }
       res.status(401).json({
         error: {
           name: err.name,
           message: err.message,
-          details: err.details || null,
+          details,
         },
       });
     }
@@ -103,11 +107,11 @@ class AuthenticationController extends ApplicationController {
       const user = await this.userModel.create({
         name,
         email,
-        encryptedPassword: this.encryptPassword(password),
+        encryptedPassword: await this.encryptPassword(password),
         roleId: role.id,
       });
 
-      const accessToken = this.createTokenFromUser(user, role);
+      const accessToken = await this.createTokenFromUser(user, role);
 
       res.status(201).json({
         accessToken,
@@ -119,9 +123,8 @@ class AuthenticationController extends ApplicationController {
 
   handleGetUser = async (req, res) => {
     const user = await this.userModel.findByPk(req.user.id);
-
     if (!user) {
-      const err = new RecordNotFoundError(this.userModel.name);
+      const err = new RecordNotFoundError(user.name);
       res.status(404).json(err);
       return;
     }
@@ -129,7 +132,7 @@ class AuthenticationController extends ApplicationController {
     const role = await this.roleModel.findByPk(user.roleId);
 
     if (!role) {
-      const err = new RecordNotFoundError(this.roleModel.name);
+      const err = new RecordNotFoundError(role.name);
       res.status(404).json(err);
       return;
     }
@@ -137,7 +140,9 @@ class AuthenticationController extends ApplicationController {
     res.status(200).json(user);
   };
 
-  createTokenFromUser = async (user, role) => this.jwt.sign({
+  async createTokenFromUser(user, role) {
+      // eslint-disable-next-line no-return-await
+      return await this.jwt.sign({
       id: user.id,
       name: user.name,
       email: user.email,
@@ -146,16 +151,22 @@ class AuthenticationController extends ApplicationController {
         id: role.id,
         name: role.name,
       },
-    }, JWT_SIGNATURE_KEY);
-
-  decodeToken(token) {
-    return this.jwt.verify(token, JWT_SIGNATURE_KEY);
+    }, process.env.JWT_SIGNATURE_KEY);
   }
 
-  encryptPassword = (password) => this.bcrypt.hashSync(password, 10);
+  async decodeToken(token) {
+    // eslint-disable-next-line no-return-await
+    return await this.jwt.verify(token, process.env.JWT_SIGNATURE_KEY);
+  }
 
-  verifyPassword(password, encryptedPassword) {
-    return this.bcrypt.compareSync(password, encryptedPassword);
+  async encryptPassword(password) {
+    // eslint-disable-next-line no-return-await
+    return await this.bcrypt.hashSync(password, 10);
+  }
+
+  async verifyPassword(password, encryptedPassword) {
+    // eslint-disable-next-line no-return-await
+    return await this.bcrypt.compareSync(password, encryptedPassword);
   }
 }
 

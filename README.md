@@ -8,5 +8,4 @@ Tugas kalian disini adalah:
 
 Good luck!
 
-Link:
 Heroku Link: https://challenge-chapter-8-safira.herokuapp.com/documentation/

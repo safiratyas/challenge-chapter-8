@@ -20,7 +20,7 @@ class ApplicationController {
     });
   };
 
-  handleError = (err, req, res) => {
+  handleError = (err, req, res, next) => {
     res.status(500).json({
       error: {
         name: err.name,

@@ -25,8 +25,8 @@ describe('GET /v1/cars/:id', () => {
     });
   });
 
-  it('should response with 200 as status code which means user can find car by ID', () => {
-    request(app)
+  it('should response with 200 as status code which means user can find car by ID', async () => {
+    await request(app)
       .get(`/v1/cars/${findCar.id}`)
       .set('Content-Type', 'application/json')
       .then((res) => {

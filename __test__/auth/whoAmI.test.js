@@ -57,15 +57,17 @@ describe('GET /v1/auth/whoami', () => {
           password: userPassword,
         })
         .then((validRoleUser) => {
+          console.log(validRoleUser.body)
           token = validRoleUser.body.accessToken;
         });
     });
 
-    it('should response with 200 as status code which means valid role (CUSTOMER)', () => {
-      request(app)
+    it('should response with 200 as status code which means valid role (CUSTOMER)', async () => {
+     await request(app)
         .get('/v1/auth/whoami')
         .set('Authorization', `Bearer ${token}`)
         .then((whichValidUser) => {
+          console.log(whichValidUser.body)
           expect(whichValidUser.statusCode).toBe(200);
           expect(whichValidUser.body.name).toEqual(validUser.name);
           expect(whichValidUser.body.email).toEqual(validUser.email.toLowerCase());

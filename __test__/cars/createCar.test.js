@@ -32,6 +32,14 @@ const newCar = {
   isCurrentlyRented: false,
 };
 
+const invalidNewCar = {
+  name: 100,
+  price: 500000,
+  size: 'SMALL',
+  image: 'https://source.unsplash.com/531x531',
+  isCurrentlyRented: false,
+};
+
 describe('POST /v1/cars', () => {
   beforeAll(async () => {
     try {
@@ -74,8 +82,8 @@ describe('POST /v1/cars', () => {
         });
     });
 
-    it('should response with 201 as status code which means valid role (ADMIN) can create new car', () => {
-      request(app)
+    it('should response with 201 as status code which means valid role (ADMIN) can create new car', async () => {
+      await request(app)
         .post('/v1/cars')
         .set('Authorization', `Bearer ${token}`)
         .send(newCar)
@@ -106,8 +114,8 @@ describe('POST /v1/cars', () => {
         });
     });
 
-    it('should response with 401 as status code which means invalid role (CUSTOMER) cannot create new car', () => {
-      request(app)
+    it('should response with 401 as status code which means invalid role (CUSTOMER) cannot create new car', async () => {
+      await request(app)
         .post('/v1/cars')
         .set('Authorization', `Bearer ${token}`)
         .send(newCar)
@@ -123,6 +131,33 @@ describe('POST /v1/cars', () => {
               },
             },
           });
+        });
+    });
+  });
+
+  describe('Mission Failed', () => {
+    let token;
+    beforeEach(async () => {
+      await request(app)
+        .post('/v1/auth/login')
+        .set('Content-Type', 'application/json')
+        .send({
+          email: validUser.email,
+          password: userPassword,
+        })
+        .then((validRoleUser) => {
+          token = validRoleUser.body.accessToken;
+        });
+    });
+
+    it('should response with 422 as status code', async () => {
+      await request(app)
+        .post('/v1/cars')
+        .set('Authorization', `Bearer ${token}`)
+        .send(invalidNewCar)
+        .then((customerCreateCar) => {
+          expect(customerCreateCar.statusCode).toBe(422);
+          expect(customerCreateCar.body.error.message).toEqual('Name must be input in string');
         });
     });
   });

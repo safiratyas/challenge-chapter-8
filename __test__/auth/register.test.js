@@ -35,6 +35,7 @@ describe('POST /v1/auth/register', () => {
     .set('Content-Type', 'application/json')
     .send(userOne)
     .then((res) => {
+      console.log(res.body)
       expect(res.statusCode).toBe(201);
       expect(res.body.accesToken).toEqual(res.body.accesToken);
     }));
