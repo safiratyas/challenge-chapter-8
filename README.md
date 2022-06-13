@@ -7,3 +7,6 @@ Tugas kalian disini adalah:
 3. Coverage minimal 70%
 
 Good luck!
+
+Link:
+Heroku Link: https://challenge-chapter-8-safira.herokuapp.com/documentation/
