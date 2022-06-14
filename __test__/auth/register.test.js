@@ -7,15 +7,18 @@ const userOne = {
   email: 'rkive@gmail.com',
   password: 'namjoonarchive',
 };
+
 const userTwo = {
   name: 'Kim Seokjin',
   email: 'seokjin@gmail.com',
   password: 'eatjin',
   role: 2,
 };
+
 beforeEach(async () => {
   await User.create(userTwo);
 });
+
 afterEach(async () => {
   await User.destroy({
     where: {
@@ -35,12 +38,11 @@ describe('POST /v1/auth/register', () => {
     .set('Content-Type', 'application/json')
     .send(userOne)
     .then((res) => {
-      console.log(res.body)
       expect(res.statusCode).toBe(201);
       expect(res.body.accesToken).toEqual(res.body.accesToken);
     }));
 
-  it('should response with 422 as status code which means email already registered befoe', async () => request(app)
+    it('should response with 422 as status code which means email already registered befoe', async () => request(app)
     .post('/v1/auth/register')
     .set('Content-Type', 'application/json')
     .send(userTwo)
@@ -49,5 +51,16 @@ describe('POST /v1/auth/register', () => {
       expect(res.body.error.details.email.toLowerCase()).toEqual(
         userTwo.email.toLowerCase(),
       );
+    }));
+
+    it('should response with 500 as status code which means nothing is send', async () => request(app)
+    .post('/v1/auth/register')
+    .set('Content-Type', 'application/json')
+    .send({
+
+    })
+    .then((res) => {
+      expect(res.statusCode).toBe(500);
+      expect(res.body.error.message).toEqual("Cannot read properties of undefined (reading 'toLowerCase')");
     }));
 });

@@ -19,6 +19,7 @@ describe('GET /v1/cars', () => {
         );
       });
   });
+
   it('should response with 200 as status code which means can show list of cars', async () => {
     await request(app)
       .get('/v1/cars?size=SMALL&availableAt=2022-06-11T16:06:28.559Z')

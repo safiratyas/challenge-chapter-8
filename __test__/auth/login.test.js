@@ -53,7 +53,21 @@ describe('POST /v1/auth/login', () => {
       expect(res.body.accesToken).toEqual(res.body.accesToken);
     }));
 
-  it('should response with 404 as status code because email is not registered', async () => request(app)
+    it('should response with 401 as status code because user input a wrong password', async () => request(app)
+    .post('/v1/auth/login')
+    .set('Content-Type', 'application/json')
+    .send({
+      email: loginEmail,
+      password: wrongPassword,
+    })
+    .then((res) => {
+      expect(res.statusCode).toBe(401);
+      expect(res.body.error.details.message).toEqual(
+        'Password is wrong',
+      );
+    }));
+
+    it('should response with 404 as status code because email is not registered', async () => request(app)
     .post('/v1/auth/login')
     .set('Content-Type', 'application/json')
     .send({
@@ -67,17 +81,14 @@ describe('POST /v1/auth/login', () => {
       );
     }));
 
-  it('should response with 401 as status code because user input a wrong password', async () => request(app)
+    it('should response with 500 as status code (Internal Server Error) which means user must be input email and password', async () => request(app)
     .post('/v1/auth/login')
     .set('Content-Type', 'application/json')
     .send({
-      email: loginEmail,
-      password: wrongPassword,
+      email: userLogin.email,
     })
     .then((res) => {
-      expect(res.statusCode).toBe(401);
-      expect(res.body.error.details.message).toEqual(
-        'Password is wrong',
-      );
+      expect(res.statusCode).toBe(500);
+      expect(res.body.error.message).toEqual('Illegal arguments: undefined, string');
     }));
 });

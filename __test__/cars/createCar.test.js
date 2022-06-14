@@ -46,6 +46,7 @@ describe('POST /v1/cars', () => {
       await User.create(invalidUser);
       await User.create(validUser);
     } catch (err) {
+      // eslint-disable-next-line no-console
       console.error(err.message);
     }
   });
@@ -63,6 +64,7 @@ describe('POST /v1/cars', () => {
         },
       });
     } catch (err) {
+      // eslint-disable-next-line no-console
       console.error(err.message);
     }
   });
@@ -150,7 +152,7 @@ describe('POST /v1/cars', () => {
         });
     });
 
-    it('should response with 422 as status code', async () => {
+    it('should response with 422 as status code which means Unprocessable Entity or there is wrong input', async () => {
       await request(app)
         .post('/v1/cars')
         .set('Authorization', `Bearer ${token}`)

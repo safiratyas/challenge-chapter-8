@@ -1,6 +1,6 @@
 const request = require('supertest');
 const bcrypt = require('bcryptjs');
-const dayjs = require('dayjs');
+// const dayjs = require('dayjs');
 const app = require('../../../app');
 const { User, Car } = require('../../../app/models');
 
@@ -11,12 +11,14 @@ describe('POST /v1/cars/:id/rent', () => {
     encryptedPassword: bcrypt.hashSync('safira', 10),
     roleId: 2,
   };
-  const Customer = {
+
+  const dataCustomer = {
     name: 'Taehyung',
     email: 'thv@mail.com',
     encryptedPassword: bcrypt.hashSync('taehyung', 10),
     roleId: 1,
   };
+
   const dataCar = {
     name: 'Hyundai',
     price: 500000,
@@ -29,7 +31,7 @@ describe('POST /v1/cars/:id/rent', () => {
 
   beforeAll(async () => {
     await User.create(dataAdmin);
-    await User.create(Customer);
+    await User.create(dataCustomer);
     const createCar = await Car.create(dataCar);
     idCar = createCar.id;
   });
@@ -53,15 +55,17 @@ describe('POST /v1/cars/:id/rent', () => {
       rentStartedAt: '2022-06-13T07:38:03.392Z',
       rentEndedAt: '2022-06-13T07:38:03.392Z',
     };
+
     beforeEach(async () => {
       await request(app)
       .post('/v1/auth/login')
       .set('Content-Type', 'application/json')
-      .send({ email: Customer.email, password: 'taehyung' })
+      .send({ email: dataCustomer.email, password: 'taehyung' })
       .then((res) => {
         tokenCustomer = res.body.accessToken;
       });
     });
+
     it('should response with 201 which means rent car is success', async () => {
       await request(app)
       .post(`/v1/cars/${idCar}/rent`)
@@ -82,6 +86,7 @@ describe('POST /v1/cars/:id/rent', () => {
       rentStartedAt: '2022-06-13T07:38:03.392Z',
       rentEndedAt: '2022-06-13T07:38:03.392Z',
     };
+
     beforeEach(async () => {
       await request(app)
       .post('/v1/auth/login')
@@ -91,6 +96,7 @@ describe('POST /v1/cars/:id/rent', () => {
         tokenAdmin = res.body.accessToken;
       });
     });
+
     it('should response with 401 which means rent car is failed', async () => {
       await request(app)
       .post(`/v1/cars/${idCar}/rent`)
@@ -121,15 +127,17 @@ describe('POST /v1/cars/:id/rent', () => {
       rentStartedAt: '2022-06-13T07:38:03.392Z',
       rentEndedAt: '2022-06-13T07:38:03.392Z',
     };
+
     beforeEach(async () => {
       await request(app)
       .post('/v1/auth/login')
       .set('Content-Type', 'application/json')
-      .send({ email: Customer.email, password: 'taehyung' })
+      .send({ email: dataCustomer.email, password: 'taehyung' })
       .then((res) => {
         tokenCustomer = res.body.accessToken;
       });
     });
+
     it('should response with 422 which means rent car already rented', async () => {
       await request(app)
       .post(`/v1/cars/${idCar}/rent`)
@@ -139,6 +147,36 @@ describe('POST /v1/cars/:id/rent', () => {
       .then((res) => {
         expect(res.statusCode).toBe(422);
         expect(res.body.error.message).toEqual(`${dataCar.name} is already rented!!`);
+      });
+    });
+  });
+
+  describe('should response with 500 as status code', () => {
+    let tokenCustomer;
+    const rentData = {
+      rentStartedAt: '2022-06-13T07:38:03.392Z',
+      // rentEndedAt: '2022-06-13T07:38:03.392Z',
+    };
+
+    beforeEach(async () => {
+      await request(app)
+      .post('/v1/auth/login')
+      .set('Content-Type', 'application/json')
+      .send({ email: dataCustomer.email, password: 'taehyung' })
+      .then((res) => {
+        tokenCustomer = res.body.accessToken;
+      });
+    });
+
+    it('should response with 500 which means rent car already rented', async () => {
+      await request(app)
+      .post(`/v1/cars/${idCar}/rent`)
+      .set('Content-Type', 'application/json')
+      .set('Authorization', `Bearer ${tokenCustomer}`)
+      .send({})
+      .then((res) => {
+        expect(res.statusCode).toBe(500);
+        expect(res.body.error.message).toEqual('Please input rent date');
       });
     });
   });

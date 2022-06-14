@@ -124,7 +124,7 @@ class AuthenticationController extends ApplicationController {
   handleGetUser = async (req, res) => {
     const user = await this.userModel.findByPk(req.user.id);
     if (!user) {
-      const err = new RecordNotFoundError(user.name);
+      const err = new RecordNotFoundError(req.user.name);
       res.status(404).json(err);
       return;
     }
@@ -132,7 +132,7 @@ class AuthenticationController extends ApplicationController {
     const role = await this.roleModel.findByPk(user.roleId);
 
     if (!role) {
-      const err = new RecordNotFoundError(role.name);
+      const err = new RecordNotFoundError(user.roleId);
       res.status(404).json(err);
       return;
     }

@@ -3,6 +3,7 @@ const app = require('../../../app');
 const { Car } = require('../../../app/models');
 
 let accessToken;
+
 beforeAll(async () => {
   const response = await request(app)
     .post('/v1/auth/login')
@@ -12,6 +13,7 @@ beforeAll(async () => {
     });
   accessToken = response.body.accessToken;
 });
+
 describe('DELETE /v1/tasks/:id', () => {
   let car;
 

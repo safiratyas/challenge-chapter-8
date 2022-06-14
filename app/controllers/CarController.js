@@ -67,11 +67,18 @@ class CarController extends ApplicationController {
   handleRentCar = async (req, res, next) => {
     try {
       const { rentStartedAt } = req.body;
-      let { rentEndedAt } = req.body;
+      const { rentEndedAt } = req.body;
+      if (!rentStartedAt && !rentEndedAt) {
+        throw new Error('Please input rent date');
+      }
       const car = await this.getCarFromRequest(req);
 
-      if (!rentEndedAt) rentEndedAt = this.dayjs(rentStartedAt).add(1, 'day');
+      let rentEnded = this.dayjs(rentStartedAt).add(1, 'day');
 
+      if (rentEndedAt) {
+        // eslint-disable-next-line no-self-assign
+        rentEnded = rentEnded;
+      }
       const activeRent = await this.userCarModel.findOne({
         where: {
           carId: car.id,
@@ -132,7 +139,9 @@ class CarController extends ApplicationController {
       },
       },
       );
-
+      if (typeof name !== 'string') {
+        throw new Error('Car name must be input in string');
+      }
       res.status(201).json(
         { message: 'Data have been updated successfully' },
         );
